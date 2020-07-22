@@ -8,6 +8,7 @@ use App\User;
 use App\Role;
 use Session;
 use Validator;
+use Auth;
 
 class UserController extends Controller
 {
@@ -20,6 +21,7 @@ class UserController extends Controller
     {
         $users = User::all();
         $roles = Role::all();
+        // dd(Auth::user()->role->name);
         return view('users.index', compact('users'));
     }
 
