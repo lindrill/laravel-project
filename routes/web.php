@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Product;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +15,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	$products = Product::all();
+    return view('welcome', compact('products'));
 });
 
 Auth::routes();
 
 Route::get('/dashboard', 'HomeController@index')->name('dashboard')->middleware('admin');
 Route::resource('/users', 'UserController')->middleware('admin');
+Route::resource('/products', 'ProductController')->middleware('admin');
+Route::resource('/deliveries', 'DeliveryController')->middleware('admin');

@@ -20,79 +20,21 @@
             </div>
         </div>
     </div>
-    <div class="d-flex flex-wrap justify-content-center"> 
+    <div class="d-flex flex-wrap justify-content-center">
+        @foreach($products as $product)
         <div class="p-3">
             <div class="card">
                 <a href="#">
-                    <img src="{{URL::asset('/images/products/ghibli-mug.jpg')}}" alt="Logo" width="250">
+                    <img src="{{ asset('/images/products/'.$product->photo) }}" alt="product image" width="250">
                 </a>
                 <div class="text-center mt-2">
-                    <h6><a href="#">Product name</a></h6>
-                    <h5>₱ 100.00</h5>
+                    <h6><a href="#">{{ $product->name }}</a></h6>
+                    <h5>{{ $product->unit_price }}</h5>
                     <button type="submit" class="btn btn-warning btn-block">Add to cart</button>
                 </div>
             </div>
         </div>
-        <div class="p-3">
-            <div class="card">
-                <a href="#">
-                    <img src="{{URL::asset('/images/products/ghibli-mug2.jpg')}}" alt="Logo" width="250">
-                </a>
-                <div class="text-center mt-2">
-                    <h6><a href="#">Product name</a></h6>
-                    <h5>₱ 100.00</h5>
-                    <button type="submit" class="btn btn-warning btn-block">Add to cart</button>
-                </div>
-            </div>
-        </div>
-        <div class="p-3">
-            <div class="card">
-                <a href="#">
-                    <img src="{{URL::asset('/images/products/ghibli-mug3.jpg')}}" alt="Logo" width="250">
-                </a>
-                <div class="text-center mt-2">
-                    <h6><a href="#">Product name</a></h6>
-                    <h5>₱ 100.00</h5>
-                    <button type="submit" class="btn btn-warning btn-block">Add to cart</button>
-                </div>
-            </div>
-        </div>
-        <div class="p-3">
-            <div class="card">
-                <a href="#">
-                    <img src="{{URL::asset('/images/products/ghibli-mug.jpg')}}" alt="Logo" width="250">
-                </a>
-                <div class="text-center mt-2">
-                    <h6><a href="#">Product name</a></h6>
-                    <h5>₱ 100.00</h5>
-                    <button type="submit" class="btn btn-warning btn-block">Add to cart</button>
-                </div>
-            </div>
-        </div>
-        <div class="p-3">
-            <div class="card">
-                <a href="#">
-                    <img src="{{URL::asset('/images/products/ghibli-mug2.jpg')}}" alt="Logo" width="250">
-                </a>
-                <div class="text-center mt-2">
-                    <h6><a href="#">Product name</a></h6>
-                    <h5>₱ 100.00</h5>
-                    <button type="submit" class="btn btn-warning btn-block">Add to cart</button>
-                </div>
-            </div>
-        </div>
-        <div class="p-3">
-            <div class="card">
-                <a href="#">
-                    <img src="{{URL::asset('/images/products/ghibli-mug3.jpg')}}" alt="Logo" width="250">
-                </a>
-                <div class="text-center mt-2">
-                    <h6><a href="#">Product name</a></h6>
-                    <h5>₱ 100.00</h5>
-                    <button type="submit" class="btn btn-warning btn-block">Add to cart</button>
-                </div>
-            </di
-
+        @endforeach
     </div> 
 </div>
 @endsection
