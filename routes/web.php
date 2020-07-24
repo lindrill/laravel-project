@@ -22,6 +22,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/dashboard', 'HomeController@index')->name('dashboard')->middleware('admin');
+Route::get('/stocks/{id}/edit', 'HomeController@edit')->middleware('admin');
+Route::patch('/stocks/{id}', 'HomeController@update')->middleware('admin');
 Route::resource('/users', 'UserController')->middleware('admin');
 Route::resource('/products', 'ProductController')->middleware('admin');
 Route::resource('/deliveries', 'DeliveryController')->middleware('admin');
