@@ -39,22 +39,17 @@
                             <th scope="col">ID</th>
                             <th scope="col">Product Name</th>
                             <th scope="col">No. of Available Stocks</th>
-                            <th scope="col">Update Stocks</th>
+                            <th scope="col">Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach($products as $product)
+                            @foreach($data as $data)
                                 <tr>
-                                    <th scope="row">{{ $product->id }}</th>
-                                    <td>{{ $product->name }}</td>
+                                    <th scope="row">{{ $data['product_id'] }}</th>
+                                    <td>{{ $data['product_name'] }}</td>
+                                    <td>{{ $data['quantity'] }}</td>
                                     <td>
-                                        @foreach($deliveries->products as $delivery)
-
-                                        @endforeach
-                                    </td>
-                                    <td>
-                                        <a href=""><button type="button" class="btn btn-info btn-sm"><i class="fas fa-plus"></i></button></a>
-                                        <a href=""><button type="button" class="btn btn-info btn-sm"><i class="fas fa-minus"></i></button></a>
+                                        <a href="stocks/{{$data['product_id']}}/edit"><button type="button" class="btn btn-info btn-sm">Update stock</button></a>
                                     </td>
                                 </tr>
                             @endforeach
