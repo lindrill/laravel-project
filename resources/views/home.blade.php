@@ -38,6 +38,7 @@
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Product Name</th>
+                            <th scope="col">Photo</th>
                             <th scope="col">No. of Available Stocks</th>
                             <th scope="col">Action</th>
                         </tr>
@@ -47,6 +48,9 @@
                                 <tr>
                                     <th scope="row">{{ $data['product_id'] }}</th>
                                     <td>{{ $data['product_name'] }}</td>
+                                    <td>
+                                        <img src="{{ asset('/images/products/'.$data['img']) }}" width="50" alt="" title="">
+                                    </td>
                                     <td>{{ $data['quantity'] }}</td>
                                     <td>
                                         <a href="stocks/{{$data['product_id']}}/edit"><button type="button" class="btn btn-info btn-sm">Update stock</button></a>
