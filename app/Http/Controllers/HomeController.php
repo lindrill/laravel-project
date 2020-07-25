@@ -42,6 +42,7 @@ class HomeController extends Controller
                         $del['quantity'] = $qty;
                         $del['product_id'] = $delivery->product_id;
                         $del['product_name'] = $product->name;
+                        $del['img'] = $product->photo;
                         array_push($p_ids, $delivery->product_id); 
                         array_push($data, $del);
                     } else {
@@ -56,6 +57,7 @@ class HomeController extends Controller
                             $del['quantity'] = $qty;
                             $del['product_id'] = $delivery->product_id;
                             $del['product_name'] = $product->name;
+                            $del['img'] = $product->photo;
                             array_push($p_ids, $delivery->product_id); 
                             array_push($data, $del);
                         }
