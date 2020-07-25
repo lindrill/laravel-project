@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Product;
+use Validator;
+use File;
 
 class ProductController extends Controller
 {
@@ -78,7 +80,8 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = Product::find($id);
+        return view('products.edit', compact('product'));
     }
 
     /**
@@ -90,7 +93,35 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'name' => 'required',
+            'desc' => 'required',
+            'unit_price' => 'required'
+        ]);
+
+        $product = Product::find($id);
+
+        if($request->photo) {
+            // remove existing photo if there's new upload
+            unlink(public_path('/images/products/'.$product->photo));
+
+            $imageName = time().'.'.$request->photo->extension();  
+       
+            $request->photo->move(public_path('images/products'), $imageName);
+            $product->photo = $imageName;
+        }
+        
+        $product->name = $request->name;
+        $product->description = $request->desc;
+        $product->unit_price = $request->unit_price;        
+        $product->save();
+
+        if($product->save()) {
+            return back()->with('message', 'Product updated!');
+        } else {
+            return back()->with('message', 'Product was not updated.');
+        }
     }
 
     /**
@@ -101,6 +132,15 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Product::find($id)->delete();
+        return redirect('/products')->with('message', 'Product deleted successfully!');;
+
+        // dd($product->delete());
+
+        // if($product->delete()) {
+        //     return back()->with('message', 'Product deleted successfully!');
+        // } else {
+        //     return back()->with('message', 'Product deletion failed.');
+        // }
     }
 }
