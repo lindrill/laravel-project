@@ -94,7 +94,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required',
             'desc' => 'required',
             'unit_price' => 'required'
@@ -133,14 +133,6 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::find($id)->delete();
-        return redirect('/products')->with('message', 'Product deleted successfully!');;
-
-        // dd($product->delete());
-
-        // if($product->delete()) {
-        //     return back()->with('message', 'Product deleted successfully!');
-        // } else {
-        //     return back()->with('message', 'Product deletion failed.');
-        // }
+        return redirect('/products')->with('message', 'Product deleted successfully!');
     }
 }
