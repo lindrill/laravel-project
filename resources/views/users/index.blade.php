@@ -46,7 +46,7 @@
                                     <td>{{ $user->role->name }}</td>
                                     <td>
                                         <a href="users/{{$user->id}}/edit"><button type="button" class="btn btn-success btn-sm">Edit</button></a>
-                                        <button type="button" class="btn btn-warning btn-sm">Change password</button>
+                                        <a href="change-password/{{$user->id}}/edit"><button type="button" class="btn btn-warning btn-sm">Change password</button></a>
                                         <form style="display: inline;" action="{{ url('users', [$user->id]) }}" method="POST">
                                             @csrf
                                             @method('DELETE')

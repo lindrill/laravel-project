@@ -9,6 +9,7 @@ use App\Role;
 use Session;
 use Validator;
 use Auth;
+use Hash;
 
 class UserController extends Controller
 {
@@ -110,5 +111,28 @@ class UserController extends Controller
     {
         $user = User::find($id)->delete();
         return redirect('/users')->with('message', 'User deleted successfully!');
+    }
+
+    public function change_password($id) {
+        $user = User::find($id);
+        return view('users.change-password', compact('user'));
+    }
+
+    public function update_password(Request $request, $id) {
+
+        $request->validate([
+            'current_password' => 'required|min:8',
+            'new_password' => 'required|min:8',
+            'confirm_password' => 'required|same:new_password|min:8',
+        ]);
+
+        $user = User::find($id);
+        if(Hash::check($request->current_password, $user->password)) {
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+            return back()->with('message', 'Password updated successfully!');
+        } else {
+            return back()->with('message', 'Password update failed!');
+        }
     }
 }
