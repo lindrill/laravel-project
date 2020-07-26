@@ -36,8 +36,17 @@
                                     <td>{{ $delivery->quantity }}</td>
                                     <td>{{ $delivery->created_at }}</td>
                                     <td>
-                                        <a href="#"><button type="button" class="btn btn-success btn-sm"><i class="far fa-edit"></i></button></a>
-                                        <button type="button" class="btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></button>
+                                        @foreach($groups as $group)
+                                            
+                                            @if($group->created_at == $delivery->created_at)
+                                                <a href="deliveries/{{$delivery->id}}/edit"><button type="button" class="btn btn-success btn-sm"><i class="far fa-edit"></i></button></a>
+                                                <form style="display: inline;" action="{{ url('deliveries', [$delivery->id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')";><i class="far fa-trash-alt"></i></button>
+                                                </form>
+                                            @endif
+                                        @endforeach
                                     </td>
                                 </tr>
                             @endforeach

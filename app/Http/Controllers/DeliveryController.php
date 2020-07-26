@@ -19,8 +19,21 @@ class DeliveryController extends Controller
         $deliveries = DB::table('deliveries')
             ->join('products', 'products.id', '=', 'deliveries.product_id')
             ->select('deliveries.*', 'products.name')
+            ->orderBy('created_at', 'desc')
             ->get();
-        return view('delivery.index', compact('deliveries'));
+
+        $del = DB::table('deliveries')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $delivery_prod = $del
+            ->groupBy('product_id');
+
+        $groups = [];
+        foreach ($delivery_prod as $key => $dp) {
+            array_push($groups, $dp->first());
+        }
+
+        return view('delivery.index', compact('deliveries', 'groups'));
     }
 
     /**
@@ -80,7 +93,13 @@ class DeliveryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $products = Product::all();
+        $delivery = DB::table('deliveries')
+            ->join('products', 'products.id', '=', 'deliveries.product_id')
+            ->select('deliveries.*', 'products.name')
+            ->where('deliveries.id', '=', $id)
+            ->get();
+        return view('delivery.edit', compact('delivery', 'products'));
     }
 
     /**
@@ -92,7 +111,23 @@ class DeliveryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'receipt_no' => 'required|string',
+            'quantity' => 'required|integer',
+            'product_id' => 'required'
+        ]);
+
+        $delivery = Delivery::find($id);
+        $delivery->receipt_no = $request->receipt_no;
+        $delivery->quantity = $request->quantity;
+        $delivery->product_id = $request->product_id;
+        $delivery->save();
+
+        if($delivery->save()) {
+            return back()->with('message', 'Delivery saved!');
+        } else {
+            return back()->with('message', 'Delivery was not saved.');
+        }
     }
 
     /**
@@ -103,6 +138,7 @@ class DeliveryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delivery = Delivery::find($id)->delete();
+        return back()->with('message', 'Delivery deleted successfully!');
     }
 }
