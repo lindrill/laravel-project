@@ -98,12 +98,6 @@ class UserController extends Controller
         if($user->save()) {
             return redirect('users/'.$id.'/edit')->with('message', 'User updated successfully!');
         }
-        
-        // if($request->role) {
-        //     return back();
-        //     // return back()->with('success', 'User updated successfully');
-        // }
-        
     }
 
     /**
@@ -114,6 +108,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id)->delete();
+        return redirect('/users')->with('message', 'User deleted successfully!');
     }
 }

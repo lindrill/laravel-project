@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
 <div class="container">
@@ -8,9 +8,20 @@
                 <div class="card-header">{{ __('Users') }}</div>
 
                 <div class="card-body">
-                    @if (session('status'))
+                    @if (session('message'))
                         <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+                            {{ session('message') }}
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
                     @endif
 
@@ -36,7 +47,11 @@
                                     <td>
                                         <a href="users/{{$user->id}}/edit"><button type="button" class="btn btn-success btn-sm">Edit</button></a>
                                         <button type="button" class="btn btn-warning btn-sm">Change password</button>
-                                        <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                                        <form style="display: inline;" action="{{ url('users', [$user->id]) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')";><i class="far fa-trash-alt"></i></button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
