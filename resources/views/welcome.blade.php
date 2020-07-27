@@ -60,8 +60,8 @@ $(document).ready(function(){
                     for(var count = 0; count < data.length; count++) {
                         output += '<div class="p-3">';
                         output += '<div class="card">';
-                        output += '<a href="stock/'+data[count].id+'">';
-                        output += '<a href="stock/'+data[count].id+'">';
+                        output += '<a href="stock/'+data[count].product_id+'">';
+                        output += '<a href="stock/'+data[count].product_id+'">';
                         output += '<img src="'+img_url+'/'+data[count].photo+'" alt="product image" width="250">';
                         output += '</a>';
                         output += '<div class="text-center mt-2">';
