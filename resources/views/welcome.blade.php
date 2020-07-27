@@ -24,11 +24,11 @@
         @foreach($products as $product)
         <div class="p-3">
             <div class="card">
-                <a href="{{ url('stocks', [$product->id]) }}">
+                <a href="{{ url('stock', [$product->id]) }}">
                     <img src="{{ asset('/images/products/'.$product->photo) }}" alt="product image" width="250">
                 </a>
                 <div class="text-center mt-2">
-                    <h6><a href="{{ url('stocks', [$product->id]) }}">{{ $product->name }}</a></h6>
+                    <h6><a href="{{ url('stock', [$product->id]) }}">{{ $product->name }}</a></h6>
                     <h5>{{ $product->unit_price }}</h5>
                     <button type="submit" class="btn btn-warning btn-block">Add to cart</button>
                 </div>
@@ -60,12 +60,12 @@ $(document).ready(function(){
                     for(var count = 0; count < data.length; count++) {
                         output += '<div class="p-3">';
                         output += '<div class="card">';
-                        output += '<a href="stocks/'+data[count].id+'">';
-                        output += '<a href="stocks/'+data[count].id+'">';
+                        output += '<a href="stock/'+data[count].id+'">';
+                        output += '<a href="stock/'+data[count].id+'">';
                         output += '<img src="'+img_url+'/'+data[count].photo+'" alt="product image" width="250">';
                         output += '</a>';
                         output += '<div class="text-center mt-2">';
-                        output += '<h6><a href="stocks/"'+data[count].product_id+'>'+data[count].name+'</a></h6>';
+                        output += '<h6><a href="stock/"'+data[count].product_id+'>'+data[count].name+'</a></h6>';
                         output += '<h5>'+data[count].unit_price+'</h5>';
                         output += '<button class="btn btn-warning btn-block">Add to cart</button>';
                         output += '</div>';
