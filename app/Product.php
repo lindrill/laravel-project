@@ -4,12 +4,22 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Product extends Model
 {
 	use SoftDeletes;
+	use SearchableTrait;
 
-    protected $primaryKey = 'id';
+	protected $primaryKey = 'id';
+
+	protected $searchable = [
+        'columns' => [
+            'products.name' => 10,
+            'products.description' => 5,
+            'products.unit_price' => 5,
+        ]
+    ];
 
     protected $fillable = [
         'name', 'description', 'photo', 'unit_price'

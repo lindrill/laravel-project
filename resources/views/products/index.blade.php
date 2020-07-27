@@ -8,13 +8,43 @@
                 <div class="card-header">{{ __('Products') }}</div>
 
                 <div class="card-body">
-                    @if (session('status'))
+
+                    @if (session('message'))
                         <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+                            {{ session('message') }}
                         </div>
                     @endif
 
-                    <a href="{{ url('/products/create') }}"><button type="button" class="btn btn-secondary btn-large">Add Product</button></a>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <div class="row text-center">
+                        <div class="col-md-8">
+                            <div class="input-group mb-3">
+                                  <input id="search_text" type="text" class="form-control" placeholder="Search product" aria-describedby="basic-addon2" name="search">
+                                  <div class="input-group-append">
+                                    <button id="search_product" class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <a href="{{ url('/products/create') }}"><button type="button" class="btn btn-secondary btn-large">Add Product</button></a>
+                        </div>
+                        
+                    </div>
+
+                    
                     <br><br>
                     <table class="table">
                         <thead>
@@ -42,7 +72,7 @@
                                         <form style="display: inline;" action="{{ url('products', [$product->id]) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')";><i class="far fa-trash-alt"></i></button>
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')";><i class="far fa-trash-alt"></i></button>
                                         </form>
                                     </td>
                                 </tr>
@@ -54,4 +84,73 @@
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+<script>
+
+$(document).ready(function(){
+
+    function load_data(search_product_query = '') {
+        var search_val = $("#search_text").val();
+        var _token = $("input[name=_token]").val();
+        $.ajax({
+            url: "/search_product",
+            method: "GET",
+            data: {search: search_val, _token:_token},
+            dataType: "json",
+            success: function(data) {
+                var output = '';
+                if(data.length > 0) {
+                    for(var count = 0; count < data.length; count++) {
+                        output += "<tr>";
+                        output += "<td id='prod_id'>"+data[count].id+"</td>";
+                        output += "<td>"+data[count].name+"</td>";
+                        output += "<td>"+data[count].photo+"</td>";
+                        output += "<td>"+data[count].description+"</td>";
+                        output += "<td>"+data[count].unit_price+"</td>";
+                        output += "<td>";
+                        output += '<a href="products/'+data[count].id+'/edit"><button type="button" class="btn btn-success btn-sm"><i class="far fa-edit"></i></button></a>';
+                        // output += '<form style="display: inline;" action="products/'+data[count].id+ '>';
+                        // output += "@method('DELETE')";
+                        output += '<button id="delete_btn" data-id="'+data[count].id+'"class="btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></button>';
+                        // output += "</form>";
+                        output += "</td>";
+                        output += "</tr>";
+                    }
+                } else {
+                    output += "<tr>";
+                    output += "<td>No data found</td>";
+                    output += "</tr>";
+                }
+                $('tbody').html(output);
+            }
+        });
+    }
+
+    function delete_product(prod_id = '') {
+        var _token = $("input[name=_token]").val();
+        $.ajax({
+            type: 'DELETE',
+            url: "/products/"+prod_id,
+            data: {id: prod_id, _token:_token, _method: 'DELETE'},
+            dataType: "json",
+            success: function() {
+                console.log("DELETED");
+            }
+        });
+    }
+
+    $('#search_product').click(function(){
+        var search_product_query = $('#search_text').val();
+        load_data(search_product_query);
+    });
+
+    $(document).on('click', '#delete_btn', function(e) {
+        window.confirm("Are you sure?");
+        var prod_id = $(this).data("id");
+        delete_product(prod_id);
+    });
+});
+
+</script>
 @endsection

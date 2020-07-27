@@ -29,3 +29,4 @@ Route::resource('/products', 'ProductController')->middleware('admin');
 Route::resource('/deliveries', 'DeliveryController')->middleware('admin');
 Route::get('/change-password/{id}/edit', 'UserController@change_password')->middleware('admin');
 Route::patch('/change-password/{id}/', 'UserController@update_password')->middleware('admin');
+Route::get('/search_product', 'ProductController@search_product')->middleware('admin');

@@ -132,7 +132,18 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::find($id)->delete();
+        $product = Product::find($id);
+        unlink(public_path('/images/products/'.$product->photo));
+        $product->delete();
         return redirect('/products')->with('message', 'Product deleted successfully!');
+    }
+
+    
+
+    public function search_product(Request $request) {
+        if($request->ajax()){
+            $products = Product::search($request->get('search'))->get();
+            return response()->json($products);
+        }
     }
 }
