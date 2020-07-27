@@ -27,13 +27,22 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $data = array();
+
         $deliveries = Delivery::all();
         $products = Product::all();
 
         $data = $this->get_stocks($deliveries, $products);
 
         return view('home', compact('data'));
+    }
+
+    public function show($id) {
+        $deliveries = Delivery::all();
+        $products = Product::where('id', $id)->get();
+
+        $data = $this->get_stocks($deliveries, $products);
+
+        return view('products.show', compact('data'));
     }
 
     public function edit($product_id)
@@ -85,6 +94,8 @@ class HomeController extends Controller
                         $del['product_id'] = $delivery->product_id;
                         $del['product_name'] = $product->name;
                         $del['img'] = $product->photo;
+                        $del['desc'] = $product->description;
+                        $del['unit_price'] = $product->unit_price;
                         array_push($p_ids, $delivery->product_id); 
                         array_push($data, $del);
                     } else {
@@ -100,6 +111,8 @@ class HomeController extends Controller
                             $del['product_id'] = $delivery->product_id;
                             $del['product_name'] = $product->name;
                             $del['img'] = $product->photo;
+                            $del['desc'] = $product->description;
+                            $del['unit_price'] = $product->unit_price;
                             array_push($p_ids, $delivery->product_id); 
                             array_push($data, $del);
                         }

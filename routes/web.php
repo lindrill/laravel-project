@@ -23,10 +23,11 @@ Auth::routes();
 
 Route::get('/dashboard', 'HomeController@index')->name('dashboard')->middleware('admin');
 Route::get('/stocks/{id}/edit', 'HomeController@edit')->middleware('admin');
+Route::get('/stocks/{id}', 'HomeController@show')->middleware('admin');
 Route::patch('/stocks/{id}', 'HomeController@update')->middleware('admin');
 Route::resource('/users', 'UserController')->middleware('admin');
 Route::resource('/products', 'ProductController')->middleware('admin');
 Route::resource('/deliveries', 'DeliveryController')->middleware('admin');
 Route::get('/change-password/{id}/edit', 'UserController@change_password')->middleware('admin');
 Route::patch('/change-password/{id}/', 'UserController@update_password')->middleware('admin');
-Route::get('/search_product', 'ProductController@search_product')->middleware('admin');
+Route::get('/search_product', 'ProductController@search_product');
