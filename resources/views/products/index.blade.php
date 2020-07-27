@@ -72,7 +72,7 @@
                                         <form style="display: inline;" action="{{ url('products', [$product->id]) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')";><i class="far fa-trash-alt"></i></button>
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete {{ $product->name }}?')";><i class="far fa-trash-alt"></i></button>
                                         </form>
                                     </td>
                                 </tr>
@@ -112,7 +112,7 @@ $(document).ready(function(){
                         output += "<td>"+data[count].unit_price+"</td>";
                         output += "<td>";
                         output += '<a href="products/'+data[count].id+'/edit"><button type="button" class="btn btn-success btn-sm"><i class="far fa-edit"></i></button></a>';
-                        output += '<button id="delete_btn" data-id="'+data[count].id+'"class="btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></button>';
+                        output += '<button id="delete_btn" data-id="'+data[count].id+'" data-prod="'+data[count].name+'" class="btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></button>';
                         output += "</td>";
                         output += "</tr>";
                     }
@@ -145,9 +145,17 @@ $(document).ready(function(){
     });
 
     $(document).on('click', '#delete_btn', function(e) {
-        window.confirm("Are you sure?");
+        var prod_name = $(this).data("prod");
         var prod_id = $(this).data("id");
-        delete_product(prod_id);
+        console.log(prod_name);
+        var confirmed = window.confirm("Are you sure you want to delete "+prod_name+"?");
+        if(confirmed) {
+            delete_product(prod_id);
+        } else {
+            console.log("not confirmed");
+        }
+
+        
     });
 });
 
