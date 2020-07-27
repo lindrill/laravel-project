@@ -27,7 +27,7 @@
                     @endif
 
                     <div class="row text-center">
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <div class="input-group mb-3">
                                   <input id="search_text" type="text" class="form-control" placeholder="Search product" aria-describedby="basic-addon2" name="search">
                                   <div class="input-group-append">
@@ -39,7 +39,7 @@
                             
                         </div>
                         <div class="col-md-4 text-right">
-                            <a href="{{ url('/products/create') }}"><button type="button" class="btn btn-secondary btn-large">Add Product</button></a>
+                            <a href="{{ url('/products/create') }}"><button type="button" class="btn btn-primary btn-large"><i class="fas fa-plus"></i> Add Product</button></a>
                         </div>
                         
                     </div>
@@ -63,7 +63,7 @@
                                     <th scope="row">{{ $product->id }}</th>
                                     <th scope="row">{{ $product->name }}</th>
                                     <td>
-                                        <img src="{{ asset('/images/products/'.$product->photo) }}" width="80" alt="" title="">
+                                        <img src="{{ asset('/images/products/'.$product->photo) }}" width="80" alt="" title="{{ $product->name }}">
                                     </td>
                                     <td>{{ $product->description }}</td>
                                     <td>{{ $product->unit_price }}</td>
@@ -89,6 +89,8 @@
 <script>
 
 $(document).ready(function(){
+    
+    var img_url = "{{ asset('/images/products/') }}";
 
     function load_data(search_product_query = '') {
         var search_val = $("#search_text").val();
@@ -105,15 +107,12 @@ $(document).ready(function(){
                         output += "<tr>";
                         output += "<td id='prod_id'>"+data[count].id+"</td>";
                         output += "<td>"+data[count].name+"</td>";
-                        output += "<td>"+data[count].photo+"</td>";
+                        output += '<td><img src="'+img_url+'/'+data[count].photo+'" width="80" alt="" title="'+data[count].name+'"></td>';
                         output += "<td>"+data[count].description+"</td>";
                         output += "<td>"+data[count].unit_price+"</td>";
                         output += "<td>";
                         output += '<a href="products/'+data[count].id+'/edit"><button type="button" class="btn btn-success btn-sm"><i class="far fa-edit"></i></button></a>';
-                        // output += '<form style="display: inline;" action="products/'+data[count].id+ '>';
-                        // output += "@method('DELETE')";
                         output += '<button id="delete_btn" data-id="'+data[count].id+'"class="btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></button>';
-                        // output += "</form>";
                         output += "</td>";
                         output += "</tr>";
                     }
