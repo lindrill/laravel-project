@@ -31,6 +31,48 @@ class HomeController extends Controller
         $deliveries = Delivery::all();
         $products = Product::all();
 
+        $data = $this->get_stocks($deliveries, $products);
+
+        return view('home', compact('data'));
+    }
+
+    public function edit($product_id)
+    {
+        $delivery = DB::table('deliveries')
+            ->join('products', 'products.id', '=', 'deliveries.product_id')
+            ->select('deliveries.*', 'products.name')
+            ->where('product_id', $product_id)
+            ->latest()
+            ->first();
+
+        return view('delivery.edit-stocks', compact('delivery'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $info_validator = Validator::make($request->all(), [
+            'quantity' => 'required|integer',
+        ]);
+
+        $delivery = Delivery::find($id);
+        $delivery->quantity = $request->quantity;
+        $delivery->save();
+        if($delivery->save()) {
+            return back()->with('message', 'Delivery updated successfully!');
+        }
+    }
+
+    public function get_stocks($deliveries, $products) {
+
+        $data = array();
+
         $del = [];
         $p_ids = [];
         $qty;
@@ -66,39 +108,18 @@ class HomeController extends Controller
             }
         }
 
-        return view('home', compact('data'));
+        return $data;
     }
 
-    public function edit($product_id)
-    {
-        $delivery = DB::table('deliveries')
-            ->join('products', 'products.id', '=', 'deliveries.product_id')
-            ->select('deliveries.*', 'products.name')
-            ->where('product_id', $product_id)
-            ->latest()
-            ->first();
+    public function search_delivery_product(Request $request) {
+        if($request->ajax()){
+            $search = $request->search;
 
-        return view('delivery.edit-stocks', compact('delivery'));
-    }
+            $deliveries = Delivery::all();
+            $products = Product::where('name', 'like', '%' .$search. '%')->get();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $info_validator = Validator::make($request->all(), [
-            'quantity' => 'required|integer',
-        ]);
-
-        $delivery = Delivery::find($id);
-        $delivery->quantity = $request->quantity;
-        $delivery->save();
-        if($delivery->save()) {
-            return back()->with('message', 'Delivery updated successfully!');
+            $data = $this->get_stocks($deliveries, $products);
+            return response()->json($data);
         }
     }
 }
