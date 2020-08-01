@@ -30,4 +30,8 @@ class Product extends Model
     public function delivery() {
         return $this->hasMany('App\Delivery');
     }
+
+    public function cart() {
+        return $this->hasMany('App\Cart');
+    }
 }

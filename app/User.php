@@ -47,4 +47,8 @@ class User extends Authenticatable
     public function role() {
         return $this->hasOne('App\Role');
     }
+
+    public function cart() {
+        return $this->belongsTo('App\User');
+    }
 }
