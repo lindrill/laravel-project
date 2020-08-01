@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header">{{ __('My Cart') }}</div>
 
@@ -35,13 +35,13 @@
                             
                         </div>
                         <div class="col-md-4 text-right">
-                            <button type="button" id="save-changes-to-cart" class="btn btn-primary btn-large">Save Changes to Cart</button></a>
+                            <button type="button" id="save-changes-to-cart" class="btn btn-primary btn-large" onclick="save_changes_to_cart()">Save Changes to Cart</button>
                         </div>
                         
                     </div>
 
                     <br><br>
-                    <table id="cart-table" class="table-cart" style="text-align: center;">
+                    <table id="cart-table" class="table table-cart" style="text-align: center;">
                         <thead>
                         <tr>
                             <th scope="col"></th>
@@ -59,12 +59,12 @@
                                     <tr>
                                         <th scope="row">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                                <input id="check-item" type="checkbox" class="form-check-input" id="exampleCheck1">
                                             </div>
                                         </th>
                                         <th scope="row">
                                             <img src="{{ asset('/images/products/'.$cart->product->photo) }}" width="80" alt="" title="">
-                                            <p class="mt-2">{{ $cart->product->name }}</p>
+                                            <p class="mt-2" id="product-name">{{ $cart->product->name }}</p>
                                         </th>
                                         <td id="unit_price">{{ $cart->product->unit_price }}</td>
                                         <td>
@@ -88,6 +88,58 @@
                              @endforeach
                         </tbody>
                     </table>
+
+                    <div class="card-footer text-muted">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <h4>Subtotal:</h4>
+                            </div>
+                            <div class="col-md-5">
+                                <h3 id="subtotal">₱ 0</h3>
+                                <!-- ₱ &#8369 -->
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <button type="button" id="checkout" class="btn btn-warning btn-large" data-toggle="modal" data-target="#exampleModalCenter">Checkout</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Checkout</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                                <table class="table table-order">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col">Item</th>
+                                      <th scope="col">Name</th>
+                                      <th scope="col">Unit Price</th>
+                                      <th scope="col">Quantity</th>
+                                      <th scope="col">Item Subtotal</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody id="modal-tbody">
+                                    
+                                  </tbody>
+                                </table>
+                          </div>
+                          <div class="modal-footer">
+                                Total Payment:<h3 id="total-payment">₱ 0</h3>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id="place-order" class="btn btn-success">Place Order</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -161,8 +213,9 @@ $(document).ready(function(){
         });
     });
 
-    var carts = [];
-    $('#save-changes-to-cart').click(function(){
+    window.save_changes_to_cart = function() {
+        var carts = [];
+
         $('.table-cart > tbody > tr').each(function(index, tr) {
             var tds = $(this).find('td');
             var cart_id = tds.find('#qty-add').data("id");
@@ -178,7 +231,66 @@ $(document).ready(function(){
             });
         });
         update_cart(carts);
+    };
+    
+    // checkbox
+    var subtotal = 0;
+    var checked_items = [];
+    $('.table-cart tbody').on('change', '#check-item', function() {
+        $(this).each(function(index, tr) {
+            
+            var row = $(this).closest('tr');
+            var total_price = row.find('#total_price').text();
+            var cart_id = row.find('#qty-add').data("id");
+            var quantity = row.find('#quantity').val();
+            var total = row.find('#total_price').text();
+            var unit_price = row.find('#unit_price').text();
+            var img = row.find('img').attr('src');
+            var product_name = row.find('#product-name').text();
+
+            if($(this).prop('checked') == true) {
+                subtotal = parseInt(subtotal) + parseInt(total_price);
+
+                checked_items.push ({
+                    id: cart_id,
+                    quantity: quantity,
+                    amount: total,
+                    unit_price: unit_price,
+                    img: img,
+                    product_name: product_name
+                });
+            } else {
+                subtotal = parseInt(subtotal) - parseInt(total_price);
+                checked_items.splice( $.inArray(cart_id, checked_items), 1 );
+            }
+
+            $('#subtotal').text("₱" + subtotal);
+            
+        });
     });
+
+    //checkout
+    $('#checkout').click(function(){
+        save_changes_to_cart();
+        console.log("checked_items", checked_items);
+        var output = '';
+        jQuery.each(checked_items, function(index, item) {
+            var item_toal = item.quantity * item.unit_price;
+            
+            output += '<tr>';
+            output += '<th><img src="'+item.img+'" width="80"></th>';
+            output += '<td>'+item.product_name+'</td>';
+            output += '<td>'+item.quantity+'</td>';
+            output += '<td>'+item.unit_price+'</td>';
+            output += '<td>'+item_toal+'</td>';
+            output += '</tr>';
+        });
+
+        $('#modal-tbody').html(output);
+        $('#total-payment').text("₱" + subtotal);
+        
+    });
+
 });
 
 </script>
