@@ -122,21 +122,7 @@ class CartController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // // $deliveries 
-        // // app('App\Http\Controllers\HomeController')->get_stocks($deliveries, $products);
-
-        // $cart = Cart::find($request->id);
-        // $product = Product::find($request->product_id);
-
-        // $total = $request->quantity * $product->unit_price;
-
-        // $cart->quantity = $request->quantity;
-        // $cart->amount = $total;
-        // $cart->save();
-
-
-
-        // return response()->json($cart);
+        //
     }
 
     public function update_cart(Request $request)
@@ -145,7 +131,6 @@ class CartController extends Controller
         $items = $request->carts;
 
         foreach ($items as $key => $value) {
-            // dd();
             $cart = Cart::find($items[$key]['id']);
             $cart->quantity = $items[$key]['quantity'];
             $amount = $items[$key]['quantity'] * $items[$key]['unit_price'];

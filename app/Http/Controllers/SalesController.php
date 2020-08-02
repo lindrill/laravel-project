@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Sale;
+use App\Cart;
 use Auth;
 
 class SalesController extends Controller
@@ -39,13 +40,14 @@ class SalesController extends Controller
         $items = $request->sales;
         $sales_items = Sale::all();
 
-        foreach ($sales_items as $sl) {
-            foreach ($items as $key => $value) {
-                // if(in_array())
+        foreach ($items as $key => $value) {
+            $sales_items = Sale::where('cart_id', $value['cart_id'])->get();
+            if(!$sales_items || count($sales_items) == 0) {
                 $sale = new Sale();
                 $sale->cart_id = $value['cart_id'];
                 $sale->product_id = $value['product_id'];
                 $sale->user_id = Auth::user()->id;
+                $cart = Cart::find($value['cart_id'])->delete();
                 $sale->save();
             }
         }

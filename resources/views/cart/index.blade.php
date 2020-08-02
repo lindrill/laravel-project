@@ -184,7 +184,7 @@ $(document).ready(function(){
                 setTimeout(function() {
                     $("#modal-message").hide();
                     window.location.reload();
-                }, 3000);
+                }, 2000);
                 
             }
         });
