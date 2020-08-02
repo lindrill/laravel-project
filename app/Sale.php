@@ -17,7 +17,7 @@ class Sale extends Model
     ];
 
     public function cart() {
-        return $this->hasMany('App\Cart');
+        return $this->belongsTo('App\Cart');
     }
 
     public function product() {

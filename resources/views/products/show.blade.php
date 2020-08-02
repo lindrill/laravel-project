@@ -47,9 +47,6 @@
                                 <div class="col">
                                     <button type="button" data-id="{{ $d['product_id']}}" id="add-to-cart" class="btn btn-warning btn-block"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to cart</button>
                                 </div>
-                                <div class="col">
-                                    <button type="button" class="btn btn-info btn-block"><i class="fa fa-credit-card" aria-hidden="true"></i> Buy now</button>
-                                </div>
                             </div>
                         </div>
                     </div>

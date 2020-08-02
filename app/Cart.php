@@ -24,8 +24,8 @@ class Cart extends Model
         return $this->hasMany('App\Users');
     }
 
-    public function cart() {
-        return $this->belongsTo('App\Sale');
+    public function sale() {
+        return $this->hasMany('App\Sale');
     }
 
 

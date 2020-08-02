@@ -47,6 +47,7 @@ class SalesController extends Controller
                 $sale->cart_id = $value['cart_id'];
                 $sale->product_id = $value['product_id'];
                 $sale->user_id = Auth::user()->id;
+                $sale->quantity = $value['quantity'];
                 $cart = Cart::find($value['cart_id'])->delete();
                 $sale->save();
             }

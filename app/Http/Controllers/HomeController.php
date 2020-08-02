@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Product;
 use App\Delivery;
+use App\Sale;
+use App\Cart;
 use DB;
 use Validator;
 
@@ -81,6 +83,7 @@ class HomeController extends Controller
     public function get_stocks($deliveries, $products) {
 
         $data = array();
+        $sales = Sale::all();
 
         $del = [];
         $p_ids = [];
@@ -117,6 +120,16 @@ class HomeController extends Controller
                             array_push($data, $del);
                         }
                     }
+                }
+            }
+        }
+
+        // check if there are sales for a product and minus product stock with sales qty
+        foreach($sales as $sale) {
+            foreach($data as $key => $value) {
+                if($sale->product_id == $value['product_id']) {
+                    $qty = $value['quantity'] - $sale->quantity;
+                    $data[$key]['quantity'] = $qty;
                 }
             }
         }
