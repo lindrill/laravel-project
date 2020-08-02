@@ -34,4 +34,8 @@ class Product extends Model
     public function cart() {
         return $this->hasMany('App\Cart');
     }
+
+    public function sale() {
+        return $this->belongsTo('App\Sale');
+    }
 }
