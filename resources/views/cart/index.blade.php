@@ -70,7 +70,7 @@
                                         <td>
                                             <button id="qty-add" data-id="{{$cart->id}}" style="display: inline;" class="btn btn-secondary btn-sm"><i class="fa fa-plus" aria-hidden="true"></i></button>
                                             <input type="text" id="quantity" class="form-control" style="width:35%; display: inline;" value="{{ $cart->quantity }}" min="1" max="{{ $stock['quantity'] }}">
-                                            <button id="qty-minus" data-id="{{$cart->id}}" class="btn btn-secondary btn-sm"><i class="fa fa-minus" aria-hidden="true"></i></button>
+                                            <button id="qty-minus" data-prod="{{$cart->product->id}}" data-id="{{$cart->id}}" class="btn btn-secondary btn-sm"><i class="fa fa-minus" aria-hidden="true"></i></button>
                                         </td>
 
                                         <?php $cart_total_price = $cart->product->unit_price * $cart->quantity; ?>
@@ -115,6 +115,7 @@
                             </button>
                           </div>
                           <div class="modal-body">
+                                <div style="display: none;" id="modal-message" class="alert alert-success" role="alert">Successfully saved order!</div>
                                 <table class="table table-order">
                                   <thead>
                                     <tr>
@@ -135,7 +136,7 @@
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" id="place-order" class="btn btn-success">Place Order</button>
+                            <button type="button" id="buy-now" class="btn btn-success" onclick="return confirm('Are you sure?');">Buy Now</button>
                           </div>
                         </div>
                       </div>
@@ -153,18 +154,38 @@
 $(document).ready(function(){
 
     function update_cart(carts) {
-
+        var output = '';
         $.ajax({
             url: "/update_cart/",
             method: "POST",
             data: {carts: carts, _token: "{{ csrf_token() }}", _method: 'PUT'},
             dataType: "json",
             success: function(data) {
-                var output = '';
                 output += '<div id="message" class="alert alert-success" role="alert">';
                 output += 'Changes saved!';
                 output += '</div>';
                 $(output).insertBefore('.card-body');
+            }
+        });
+
+        setTimeout(function() { $("#message").hide(); }, 3000);
+    }
+
+    function store_sale(sales) {
+        $.ajax({
+            url: "/sales",
+            method: "POST",
+            data: {sales: sales, _token: "{{ csrf_token() }}", _method: 'POST'},
+            dataType: "json",
+            success: function(data) {
+                console.log("Success!");
+                $("#buy-now").prop('disabled', true);
+                $("#modal-message").show();
+                setTimeout(function() {
+                    $("#modal-message").hide();
+                    window.location.reload();
+                }, 3000);
+                
             }
         });
     }
@@ -247,17 +268,19 @@ $(document).ready(function(){
             var unit_price = row.find('#unit_price').text();
             var img = row.find('img').attr('src');
             var product_name = row.find('#product-name').text();
+            var product_id = row.find('#qty-minus').data("prod");
 
             if($(this).prop('checked') == true) {
                 subtotal = parseInt(subtotal) + parseInt(total_price);
 
                 checked_items.push ({
-                    id: cart_id,
+                    cart_id: cart_id,
                     quantity: quantity,
                     amount: total,
                     unit_price: unit_price,
                     img: img,
-                    product_name: product_name
+                    product_name: product_name,
+                    product_id: product_id,
                 });
             } else {
                 subtotal = parseInt(subtotal) - parseInt(total_price);
@@ -272,7 +295,6 @@ $(document).ready(function(){
     //checkout
     $('#checkout').click(function(){
         save_changes_to_cart();
-        console.log("checked_items", checked_items);
         var output = '';
         jQuery.each(checked_items, function(index, item) {
             var item_toal = item.quantity * item.unit_price;
@@ -289,6 +311,11 @@ $(document).ready(function(){
         $('#modal-tbody').html(output);
         $('#total-payment').text("₱" + subtotal);
         
+    });
+
+    $('#buy-now').click(function(){
+        console.log("checked_items", checked_items);
+        store_sale(checked_items);
     });
 
 });
