@@ -28,6 +28,7 @@ Route::get('/dashboard', 'HomeController@index')->name('dashboard')->middleware(
 Route::get('/stocks/{id}/edit', 'HomeController@edit')->middleware('admin');
 Route::get('/stock/{id}', 'HomeController@show')->middleware('admin');
 Route::patch('/stocks/{id}', 'HomeController@update')->middleware('admin');
+Route::get('/search_delivery_product', 'HomeController@search_delivery_product')->middleware('admin');
 Route::resource('/users', 'UserController')->middleware('admin');
 Route::resource('/products', 'ProductController')->middleware('admin');
 Route::resource('/deliveries', 'DeliveryController')->middleware('admin');
