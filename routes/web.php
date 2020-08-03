@@ -37,4 +37,6 @@ Route::patch('/change-password/{id}/', 'UserController@update_password')->middle
 Route::get('/search_product', 'ProductController@search_product');
 Route::resource('/cart', 'CartController');
 Route::put('/update_cart', 'CartController@update_cart');
-Route::resource('/sales', 'SalesController');
+Route::resource('/sales', 'SalesController')->middleware('admin');
+Route::get('/purchase', 'SalesController@purchase');
+Route::get('/search_sales', 'SalesController@search_sales');
