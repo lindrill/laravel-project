@@ -36,6 +36,6 @@ class Product extends Model
     }
 
     public function sale() {
-        return $this->belongsTo('App\Sale');
+        return $this->hasMany('App\Sale');
     }
 }

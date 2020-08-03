@@ -33,6 +33,7 @@
               <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
               <a class="nav-link" href="{{ url('/deliveries') }}">Deliveries</a>
               <a class="nav-link" href="{{ url('/products') }}">Products</a>
+              <a class="nav-link" href="{{ url('/sales') }}">Sales</a>
               <a class="nav-link" href="{{ url('/users') }}">Users</a>
             </nav>
 
