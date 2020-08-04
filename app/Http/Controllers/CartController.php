@@ -17,7 +17,7 @@ class CartController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $carts = Cart::with('product')->get();
+        $carts = Cart::where('user_id', Auth::user()->id)->with('product')->get();
         $deliveries = Delivery::all();
         $products = Product::all();
         $stocks = app('App\Http\Controllers\HomeController')->get_stocks($deliveries, $products);
