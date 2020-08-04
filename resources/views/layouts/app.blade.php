@@ -61,7 +61,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="">
+                                    <a class="dropdown-item" href="/users/{{ Auth::user()->id }}">
                                         {{ __('My Account') }}
                                     </a>
                                     <a class="dropdown-item" href="/purchase">
