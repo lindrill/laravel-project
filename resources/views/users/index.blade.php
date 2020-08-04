@@ -25,7 +25,7 @@
                         </div>
                     @endif
 
-                    <button type="button" class="btn btn-secondary btn-large">Add User</button>
+<!--                     <button type="button" class="btn btn-secondary btn-large">Add User</button> -->
                     <br><br>
                     <table class="table">
                         <thead>
