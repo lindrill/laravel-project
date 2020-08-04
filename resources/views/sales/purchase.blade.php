@@ -52,7 +52,7 @@
                                         {{ $sale->quantity }}
                                     </td>
 
-                                    <td>₱ {{ $sale->product->unit_price * $sale->quantity }}</td>  
+                                    <td>₱ {{ number_format($sale->product->unit_price * $sale->quantity, 2) }}</td>  
                                 </tr>
                             @endforeach
                         </tbody>

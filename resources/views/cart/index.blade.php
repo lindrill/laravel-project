@@ -27,9 +27,6 @@
 
                     <div class="row text-center">
                         <div class="col-md-6">
-                            <!-- <div class="input-group mb-3">
-                                <a href="#"><button type="button" class="btn btn-secondary btn-large">Add Delivery</button></a>
-                            </div> -->
                         </div>
                         <div class="col">
                             
@@ -66,7 +63,7 @@
                                             <img src="{{ asset('/images/products/'.$cart->product->photo) }}" width="80" alt="" title="">
                                             <p class="mt-2" id="product-name">{{ $cart->product->name }}</p>
                                         </th>
-                                        <td id="unit_price">{{ $cart->product->unit_price }}</td>
+                                        <td id="unit_price">{{ number_format($cart->product->unit_price, 2) }}</td>
                                         <td>
                                             <button id="qty-add" data-id="{{$cart->id}}" style="display: inline;" class="btn btn-secondary btn-sm"><i class="fa fa-plus" aria-hidden="true"></i></button>
                                             <input type="text" id="quantity" class="form-control" style="width:35%; display: inline;" value="{{ $cart->quantity }}" min="1" max="{{ $stock['quantity'] }}">
@@ -74,7 +71,7 @@
                                         </td>
 
                                         <?php $cart_total_price = $cart->product->unit_price * $cart->quantity; ?>
-                                        <td id="total_price">{{ $cart_total_price }}</td>
+                                        <td id="total_price">{{ number_format($cart_total_price, 2) }}</td>
                                         <td>
                                             <form style="display: inline;" action="/cart/{{$cart->id}}" method="POST">
                                                 @csrf
@@ -89,14 +86,14 @@
                         </tbody>
                     </table>
 
-                    <div class="card-footer text-muted">
+                    <div class="card-footer text-right">
+                        <h4>Subtotal:</h4><h3 id="subtotal"> ₱ 0.00 </h3>
                         <div class="row text-center">
                             <div class="col-md-3">
-                                <h4>Subtotal:</h4>
+                                
                             </div>
-                            <div class="col-md-5">
-                                <h3 id="subtotal">₱ 0</h3>
-                                <!-- ₱ &#8369 -->
+                            <div class="col-md-5 text-right">
+                                
                             </div>
                             <div class="col-md-4 text-right">
                                 <button type="button" id="checkout" class="btn btn-warning btn-large" data-toggle="modal" data-target="#exampleModalCenter">Checkout</button>
@@ -136,7 +133,7 @@
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" id="buy-now" class="btn btn-success" onclick="return confirm('Are you sure?');">Buy Now</button>
+                            <button type="button" id="buy-now" class="btn btn-success">Buy Now</button>
                           </div>
                         </div>
                       </div>
@@ -199,14 +196,14 @@ $(document).ready(function(){
             var total_price = row.find('#total_price').text();
 
             row.find('#quantity').val(Number(quantity_val) + 1);
-            row.find('#total_price').text(parseInt(total_price) + parseInt(unit_price));
+            row.find('#total_price').text((parseFloat(total_price) + parseFloat(unit_price)).toFixed(2));
 
             // set min value size
             var max = row.find('#quantity').attr('max');
 
             if(quantity_val == max) {
                 row.find('#quantity').val(max);
-                row.find('#total_price').text(parseInt(unit_price) * parseInt(max));
+                row.find('#total_price').text((parseFloat(unit_price) * parseInt(max)).toFixed(2));
             }
         });
     });
@@ -230,7 +227,7 @@ $(document).ready(function(){
                 quantity_val = parseInt(quantity_val) - 1;
             }
         
-            row.find('#total_price').text(total_price);
+            row.find('#total_price').text(total_price.toFixed(2));
         });
     });
 
@@ -271,7 +268,7 @@ $(document).ready(function(){
             var product_id = row.find('#qty-minus').data("prod");
 
             if($(this).prop('checked') == true) {
-                subtotal = parseInt(subtotal) + parseInt(total_price);
+                subtotal = parseFloat(subtotal) + parseFloat(total_price);
 
                 checked_items.push ({
                     cart_id: cart_id,
@@ -283,11 +280,11 @@ $(document).ready(function(){
                     product_id: product_id,
                 });
             } else {
-                subtotal = parseInt(subtotal) - parseInt(total_price);
+                subtotal = parseFloat(subtotal) - parseFloat(total_price);
                 checked_items.splice( $.inArray(cart_id, checked_items), 1 );
             }
 
-            $('#subtotal').text("₱" + subtotal);
+            $('#subtotal').text("₱" + parseFloat(subtotal).toFixed(2));
             
         });
     });
