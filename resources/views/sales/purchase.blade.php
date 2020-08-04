@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header">{{ __('My purchased items') }}</div>
 
@@ -30,6 +30,7 @@
                     <table class="table">
                         <thead>
                         <tr>
+                            <td scope="col">Order ID</td>
                             <th scope="col">Date</th>
                             <th scope="col">Product Name</th>
                             <th scope="col">Unit Price</th>
@@ -40,6 +41,7 @@
                         <tbody>
                             @foreach($user_sales as $sale)
                                 <tr>
+                                    <td>{{ $sale->id }}</td>
                                     <td>{{ $sale->created_at }}</td>
                                     <td>
                                         <img src="{{ asset('/images/products/'.$sale->product->photo) }}" width="80">

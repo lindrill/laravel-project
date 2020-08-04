@@ -28,7 +28,7 @@
                         </div>
                         <div class="col-md-4 text-right">
                            <a href="{{ url('/products/create') }}"><button type="button" class="btn btn-success"><i class="fas fa-plus"></i> Add product</button></a>
-                           <a href=""><button type="button" class="btn btn-warning"><i class="fas fa-plus"></i> Add delivery</button></a>
+                           <a href="deliveries/create"><button type="button" class="btn btn-warning"><i class="fas fa-plus"></i> Add delivery</button></a>
                         </div>
                         
                     </div>
