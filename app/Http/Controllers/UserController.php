@@ -55,7 +55,13 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        if(Auth::user()->id == $id) {
+            $user = User::find($id);
+            return view('users.myaccount', compact('user'));
+        } else {
+            return redirect('/');
+        }
+        
     }
 
     /**
@@ -68,6 +74,29 @@ class UserController extends Controller
     {
         $user = User::find($id);
         return view('users.edit', compact('user'));
+    }
+
+    public function update_account(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|min:8',
+            'email' => 'required:unique:users',
+            'address' => 'required',
+            'phone_no' => 'required|numeric',
+            'postal_code' => 'required|numeric'
+        ]);
+
+        $user = User::find($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->address = $request->address;
+        $user->phone_no = $request->phone_no;
+        $user->postal_code = $request->postal_code;
+        $user->save();
+
+        if($user->save()) {
+            return back()->with('message', 'User updated successfully!');
+        }
     }
 
     /**
@@ -83,8 +112,8 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required:unique:users',
             'address' => 'required',
-            'phone_no' => 'required',
-            'postal_code' => 'required',
+            'phone_no' => 'required|numeric',
+            'postal_code' => 'required|numeric',
         ]);
 
 
