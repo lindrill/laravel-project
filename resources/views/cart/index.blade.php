@@ -68,6 +68,7 @@
                                             <button id="qty-add" data-id="{{$cart->id}}" style="display: inline;" class="btn btn-secondary btn-sm"><i class="fa fa-plus" aria-hidden="true"></i></button>
                                             <input type="text" id="quantity" class="form-control" style="width:35%; display: inline;" value="{{ $cart->quantity }}" min="1" max="{{ $stock['quantity'] }}">
                                             <button id="qty-minus" data-prod="{{$cart->product->id}}" data-id="{{$cart->id}}" class="btn btn-secondary btn-sm"><i class="fa fa-minus" aria-hidden="true"></i></button>
+                                            <p style="display: none;" id="status" style="color: red;">No more stocks available</p>
                                         </td>
 
                                         <?php $cart_total_price = $cart->product->unit_price * $cart->quantity; ?>
@@ -129,7 +130,7 @@
                                 </table>
                           </div>
                           <div class="modal-footer">
-                                Total Payment:<h3 id="total-payment">₱ 0</h3>
+                                Total Payment:<h3 id="total-payment">₱ 0.00</h3>
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -182,7 +183,6 @@ $(document).ready(function(){
                     $("#modal-message").hide();
                     window.location.reload();
                 }, 2000);
-                
             }
         });
     }
@@ -204,7 +204,9 @@ $(document).ready(function(){
             if(quantity_val == max) {
                 row.find('#quantity').val(max);
                 row.find('#total_price').text((parseFloat(unit_price) * parseInt(max)).toFixed(2));
+                row.find("#status").show().delay(1000).fadeOut();
             }
+
         });
     });
 
@@ -294,14 +296,14 @@ $(document).ready(function(){
         save_changes_to_cart();
         var output = '';
         jQuery.each(checked_items, function(index, item) {
-            var item_toal = item.quantity * item.unit_price;
+            var item_total = item.quantity * item.unit_price;
             
             output += '<tr>';
             output += '<th><img src="'+item.img+'" width="80"></th>';
             output += '<td>'+item.product_name+'</td>';
+            output += '<td>'+parseFloat(item.unit_price).toFixed(2)+'</td>';
             output += '<td>'+item.quantity+'</td>';
-            output += '<td>'+item.unit_price+'</td>';
-            output += '<td>'+item_toal+'</td>';
+            output += '<td>'+parseFloat(item_total).toFixed(2)+'</td>';
             output += '</tr>';
         });
 
