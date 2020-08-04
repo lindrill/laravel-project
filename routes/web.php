@@ -40,3 +40,4 @@ Route::put('/update_cart', 'CartController@update_cart');
 Route::resource('/sales', 'SalesController')->middleware('admin');
 Route::get('/purchase', 'SalesController@purchase');
 Route::get('/search_sales', 'SalesController@search_sales');
+Route::get('/sales_pdf/{keyword}/{start_date}/{end_date}','SalesController@export_pdf');

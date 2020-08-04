@@ -9,6 +9,7 @@ use App\Product;
 use Auth;
 use DB;
 use Carbon\Carbon;
+use PDF;
 
 class SalesController extends Controller
 {
@@ -24,11 +25,10 @@ class SalesController extends Controller
             ->join('products', 'sales.product_id', '=', 'products.id')
             ->join('carts', 'sales.cart_id', '=', 'carts.id')
             ->join('users', 'sales.user_id', '=', 'users.id')
-            ->select('sales.*', 'sales.created_at as sales_date', 'products.*', 'carts.amount', 'users.name as user_name')
+            ->select('sales.*', 'sales.id as sales_id', 'sales.created_at as sales_date', 'products.*', 'carts.amount', 'users.name as user_name')
             ->get();
 
         return view('sales.index', compact('sales'));
-        
     }
 
     /**
@@ -163,16 +163,84 @@ class SalesController extends Controller
     // }
 
     public function search_sales(Request $request) {
-        $search = $request->search;
 
-        $sales_by_product_name = DB::table('sales')
+        $search = $request->search;
+        $from_date = $request->from_date . ' 00:00:00';
+        $to_date = $request->to_date . ' 23:59:59';
+
+        $sales = DB::table('sales')
             ->join('products', 'sales.product_id', '=', 'products.id')
             ->join('carts', 'sales.cart_id', '=', 'carts.id')
             ->join('users', 'sales.user_id', '=', 'users.id')
-            ->select('sales.*', 'sales.created_at as sales_date', 'products.*', 'carts.amount', 'users.name as user_name')
-            ->where('products.name', 'like', '%' .$search. '%')
-            ->get();
+            ->select('sales.*', 'sales.id as sales_id', 'sales.created_at as sales_date', 'products.*', 'carts.amount', 'users.name as user_name')
+            ->where('products.name', 'like', '%' .$search. '%');
 
-        return response()->json($sales_by_product_name);
+            if(!empty($request->from_date) && !empty($request->to_date)) {
+                $sales->where(function($query) use ($from_date, $to_date){
+                  $query->orWhereBetween('sales.created_at', [$from_date, $to_date]);
+                });
+            }
+        $sales = $sales->get();
+        return response()->json($sales);
+    }
+
+    public function export_pdf($keyword, $start_date, $end_date)
+    {
+        if($keyword == 'null' && $start_date == 'null' && $end_date == 'null') {
+            $sales = DB::table('sales')
+                ->join('products', 'sales.product_id', '=', 'products.id')
+                ->join('carts', 'sales.cart_id', '=', 'carts.id')
+                ->join('users', 'sales.user_id', '=', 'users.id')
+                ->select('sales.*', 'sales.id as sales_id', 'sales.created_at as sales_date', 'products.*', 'carts.amount', 'users.name as user_name')
+                ->get();
+
+            $first_date = $sales[0]->sales_date;
+            $last_date = $sales[count($sales) - 1]->sales_date;
+
+            $data = [
+                'title' => 'Sales Report of All Products',
+                'start_date' => $first_date,
+                'end_date' => $last_date,
+                'keyword' => $keyword
+            ];
+
+            $pdf = PDF::loadView('pdf_view', compact('sales', 'data'));
+            return $pdf->download('all-products-sales-report.pdf');
+
+        } else {
+
+            if($keyword == 'null') {
+                $keyword = '';
+            }
+
+            $from_date = $start_date . ' 00:00:00';
+            $to_date = $end_date . ' 23:59:59';
+
+            $sales = DB::table('sales')
+                ->join('products', 'sales.product_id', '=', 'products.id')
+                ->join('carts', 'sales.cart_id', '=', 'carts.id')
+                ->join('users', 'sales.user_id', '=', 'users.id')
+                ->select('sales.*', 'sales.id as sales_id', 'sales.created_at as sales_date', 'products.*', 'carts.amount', 'users.name as user_name')
+                ->where('products.name', 'like', '%' .$keyword. '%');
+
+                if(($start_date != 'null' || $end_date != 'null')) {
+                    $sales->where(function($query) use ($from_date, $to_date) {
+                        $query->orWhereBetween('sales.created_at', [$from_date, $to_date]);
+                    });
+                }
+
+            $sales = $sales->get();
+            
+            $data = [
+                'title' => 'Sales Report',
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'keyword' => $keyword
+            ];
+
+            $pdf = PDF::loadView('pdf_view', compact('sales', 'data')); 
+            return $pdf->download('sales-report.pdf');
+        }
+        
     }
 }
