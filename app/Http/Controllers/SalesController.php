@@ -120,48 +120,6 @@ class SalesController extends Controller
         return view('sales.purchase', compact('user_sales', 'products'));
     }
 
-    // public function get_sales($products) {
-
-            // dd($sales);
-        // $sales_ids = Sale::groupBy('product_id')->pluck('product_id');
-        // $products = Product::groupBy('id')
-        //             ->whereIn('id', $sales_ids)
-        //             ->with('sale')
-        //             ->get();
-
-        // $sales = $this->get_sales($products);
-
-        
-    //     $sales = array();
-    //     $items = [];
-    //     $total_sales = 0;
-    //     foreach ($products as $key => $product) {
-    //         $quantity = 0;
-    //         foreach ($product->sale as $sale) {
-
-    //             $items['id'] = $product->id;
-    //             $items['product_name'] = $product->name;
-    //             $items['unit_price'] = $product->unit_price;
-    //             $items['photo'] = $product->photo;
-                
-    //             if($product->id == $sale->product_id) {
-    //                 $quantity += $sale->quantity;
-    //             }
-    //         }
-
-    //         $items['quantity'] = $quantity;
-    //         $total = $quantity * $product->unit_price;
-    //         $items['total'] = $total;
-    //         $total_sales += $total;
-
-    //         array_push($sales, $items);
-    //     }
-    //     $sales['total_sales'] = $total_sales;
-        
-    //     return $sales;
-
-    // }
-
     public function search_sales(Request $request) {
 
         $search = $request->search;
