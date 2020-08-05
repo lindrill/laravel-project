@@ -195,9 +195,6 @@ $(document).ready(function(){
             var unit_price = row.find('#unit_price').text();
             var total_price = row.find('#total_price').text();
 
-            row.find('#quantity').val(Number(quantity_val) + 1);
-            row.find('#total_price').text((parseFloat(total_price) + parseFloat(unit_price)).toFixed(2));
-
             // set min value size
             var max = row.find('#quantity').attr('max');
 
@@ -205,6 +202,12 @@ $(document).ready(function(){
                 row.find('#quantity').val(max);
                 row.find('#total_price').text((parseFloat(unit_price) * parseInt(max)).toFixed(2));
                 row.find("#status").show().delay(1000).fadeOut();
+            } else {
+                quantity_val = parseInt(quantity_val) + 1;
+                console.log('quantity_val', quantity_val);
+                row.find('#quantity').val(quantity_val);
+                total_price = parseInt(quantity_val) * parseFloat(unit_price);
+                row.find('#total_price').text(total_price.toFixed(2));
             }
 
         });
@@ -222,14 +225,14 @@ $(document).ready(function(){
             // set min value size
             var min = row.find('#quantity').attr('min');
 
-            if(quantity_val > min) {
-                row.find('#quantity').val(Number(quantity_val) - 1);
-                total_price = parseFloat(total_price) - unit_price;
+            if(quantity_val == min) {
+                row.find('#quantity').val(min);
             } else {
                 quantity_val = parseInt(quantity_val) - 1;
+                row.find('#quantity').val(quantity_val);
+                total_price = parseFloat(quantity_val) * parseFloat(unit_price);
+                row.find('#total_price').text(total_price.toFixed(2));
             }
-        
-            row.find('#total_price').text(total_price.toFixed(2));
         });
     });
 
@@ -308,7 +311,7 @@ $(document).ready(function(){
         });
 
         $('#modal-tbody').html(output);
-        $('#total-payment').text("₱" + subtotal);
+        $('#total-payment').text("₱" + parseFloat(subtotal).toFixed(2));
         
     });
 
