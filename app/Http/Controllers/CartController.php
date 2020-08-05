@@ -46,7 +46,7 @@ class CartController extends Controller
         $products = Product::where('id', $prod_id)->get();
         $deliveries = Delivery::all();
         $num_stocks = 0;
-        $cart = Cart::where('product_id', $prod_id)->first();
+        $cart = Cart::where('product_id', $prod_id)->where('user_id', Auth::user()->id)->first();
 
         // checking available stocks before adding to cart
         $stocks = app('App\Http\Controllers\HomeController')->get_stocks($deliveries, $products);
